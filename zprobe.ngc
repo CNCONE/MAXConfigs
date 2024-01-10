@@ -1,0 +1,18 @@
+%
+o <zprobe> sub
+G40			; tool compensation off
+G90
+G0 G53 Z0 		; move z up
+G0 G53 X40.0 Y40.0  	; go to probe coordinates
+G0 G53 Z-40.0 		; move down to probe position
+G91 			; incremental move
+G38.2 Z-80 F1000 	; go down and probe fast
+G1 Z2.0 		; move up 2mm to clear probe
+G38.2 Z-2.0 F200 	; probe again more accurate
+G1 Z0.2 		; move up 0.05mm to clear probe
+G38.2 Z-0.2 F1	 	; probe again most accurate
+G92 Z28.5 		; save offset
+G90 			; back to absolute positioning
+G0 G53 Z0 		; move up to clear Z
+o <zprobe> endsub
+%
