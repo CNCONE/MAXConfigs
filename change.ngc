@@ -1,0 +1,75 @@
+O<change> sub
+  ;otherwise after the M6 this information is gone!
+  #<xpos> = #<_x>                              (PRINT,save absolute X=#<_x>;)
+  #<ypos> = #<_y>                              (PRINT,save absolute Y=#<_y>;)
+  #<tlo> = #5403                               (PRINT,current offset for tool #<_selected_tool>=#<tlo>;)
+  #<chx> = #<_ini[CHANGE_POSITION]X>
+  #<chy> = #<_ini[CHANGE_POSITION]Y>
+  #<chz> = #<_ini[CHANGE_POSITION]Z>
+  #<tsm> = #<_ini[TOOLSENSOR]MAXPROBE>
+  #<tsx> = #<_ini[TOOLSENSOR]X>
+  #<tsy> = #<_ini[TOOLSENSOR]Y>
+  #<tsz> = #<_ini[TOOLSENSOR]Z>
+  #<probeheight> = #<_hal[gmoccapy.probeheight]>
+
+  ; we must execute this only in the milltask interpreter
+  ; or preview will break, so test for '#<_task>' which is 1 for
+  ; the milltask interpreter and 0 in the UI's
+  O100 if [#<_task> EQ 0]
+  O100 return [999]
+  O100 endif
+ 
+  O200 if [#<_hal[gmoccapy.toolmeasurement]> EQ 0]
+  O200 return [3] ; indicate no tool measurement
+  O200 endif
+ 
+  O300 if [#<_hal[gmoccapy.searchvel]> LE 0]
+  O300 return [-1] ; indicate searchvel <= 0
+  O300 endif
+ 
+  O400 if [#<_hal[gmoccapy.probevel]> LE 0]
+  O400 return [-2] ; indicate probevel <= 0
+  O400 endif
+ 
+  M73					(PRINT, save modal state and restore automatic)
+  G90
+  G53 G0 Z0                             (PRINT,move to travel height)
+ 
+  G53 G0 X[#<chx>] Y[#<chy>]                   (PRINT,move to change position)
+  G53 G0 Z[#<chz>]
+  G49                                          (PRINT,cancel tool offset)
+  G92.2                                        (PRINT,turn off G92 offsets)
+ 
+  M6                                           (PRINT,real change tool)
+ 
+  O700 if [#<_selected_tool> EQ 99]
+    G10 L1 P99 Z0                              (PRINT,reset probe offset)
+  O700 else	
+    G90
+    G53 G0 Z0
+    G53 G0 X[#<tsx>] Y[#<tsy>]                 (PRINT,move to toolsensor)
+
+    F #<_hal[gmoccapy.searchvel]>              (PRINT,set search speed)
+    G91                                        (PRINT,relative move )
+    G38.2 Z#<tsm>                              (PRINT,touch sensor)
+    G0 Z2                                      (PRINT,release sensor)
+    F #<_hal[gmoccapy.probevel]>               (PRINT,set probe speed)
+    G38.2 Z-4                                  (PRINT,touch sensor)
+    G90                                        (PRINT,absolute move)
+
+    O800 if [#5070 EQ 0]
+    O800 return [-3] ; indicate probe contact failure to epilog
+    O800 endif
+
+    G10 L1 P[#<_selected_tool>] Z[#5063+#[5203+[#5220*20]]+#<probeheight>]
+    G43
+
+  O700 endif
+
+  G92.3                                        (PRINT,restore G92 offsets)
+  G53 G0 Z0                                    (PRINT,move to travel height)
+  G0 X[#<xpos>] Y[#<ypos>]                     (PRINT,return to where we were in WCS X=#<xpos> Y=#<ypos>;)
+
+; signal success be returning a value > 0:
+O<change> endsub [1]
+M2
