@@ -6,9 +6,9 @@
 ### 3.) Start the machine and do a reference run. Jog with a tool in the spindle right over the center of the probe.
 ![plot](https://github.com/CNCONE/ManualPictures/blob/main/zprobe_posjog.jpg)
 ![plot](https://github.com/CNCONE/ManualPictures/blob/main/zprobe_jogcoord.png)
-### 4.) Open the "CNC-ONE.ini" file in your config folder and adjust the tool sensor position. Only change X and Y to machine absolute coordinates.
+### 4.) Open the "CNC-ONE.ini" file in your config folder and scrool down to the entry [TOOLSENSOR]. Adjust the tool sensor position. Only change X and Y to machine absolute coordinates.
 ![plot](https://github.com/CNCONE/ManualPictures/blob/main/zprobe_ini.png)
-### 5.) Adjust the tool change position to a value of choice. Here it is the further most left corner.
+### 5.) Adjust the tool change position to a value of choice.([CHANGE_POSITION]) Here it is the further most left corner.
 ### 6.) Remove the tool from the spindle
 ### 7.) Jog with the edge of the spindle on the z-probe until the probe triggers. Write down the absolute Z position.
 ![plot](https://github.com/CNCONE/ManualPictures/blob/main/zprobe_heightjog.jpg)
