@@ -2,7 +2,7 @@
 
 ## Setup Z-Probe
 #### 1.) Mount the Z-Probe on the table of the machine and connect it to the control cabinet.
-#### 2.) Unpack "CNC-ONE Max setup with stationary z-probe.zip" in your config folder of your machine.
+#### 2.) Unpack "CNC-ONE Max setup with stationary z-probe.zip" in your config folder (/home/pi/linuxcnc/configs/CNC-ONE) of your machine.
 #### 3.) Start the machine and do a reference run. Jog with a tool in the spindle right over the center of the probe.
 ![plot](https://github.com/CNCONE/ManualPictures/blob/main/zprobe_posjog.jpg)
 ![plot](https://github.com/CNCONE/ManualPictures/blob/main/zprobe_jogcoord.png)
